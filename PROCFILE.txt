@@ -1,0 +1,1 @@
+te: python tel_bot.py
