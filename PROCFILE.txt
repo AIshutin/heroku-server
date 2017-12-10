@@ -1,1 +1,1 @@
-te: python tel_bot.py
+te: python te_bot.py
