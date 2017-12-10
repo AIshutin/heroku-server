@@ -13,10 +13,10 @@ while log:
     updates = response.json()
     for msg in updates['result']:
         data = dict()
-        print(msg)
+        #print(msg)
         last_update_id = max(last_update_id, int(msg["update_id"]) + 1)
         data["chat_id"] = msg["message"]["chat"]["id"]
-        data["text"] = "I am alive4"
+        data["text"] = "I am alive"
         #print(msg["message"]["text"], msg["message"]["from"]["id"], msg["message"]["text"] == "/shutdown", msg["message"]["from"]["id"] == "438162308")
         #print(msg["message"]["from"]["id"] == int(msg["message"]["from"]["id"]))
         if admin == 0:
