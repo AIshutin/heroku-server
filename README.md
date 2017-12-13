@@ -1,1 +1,1 @@
-# heroku-server
+# sample-heroku-config

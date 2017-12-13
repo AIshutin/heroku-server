@@ -1,2 +1,1 @@
-requests
-wikipedia
+requests==2.18.4
