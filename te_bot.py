@@ -24,7 +24,7 @@ while log:
         if msg["message"]["text"] == "/shutdown" and msg["message"]["from"]["id"] == admin:
             print("XXX")
             log = False
-            break
+            #break
         URL = "https://api.telegram.org/bot" + str(API_KEY) + "/sendMessage"
         response = requests.get(URL, data=data) # make GET request
         #print(msg)
