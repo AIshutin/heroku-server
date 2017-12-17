@@ -38,8 +38,8 @@ class PWord:
                 self.formes = kwargs[el]
         
     def __str__(self):
-        ans = ["* " + str(self.name) + " *", "Часть речи: " + str(self.type)]
-        c = "Характеристика: "
+        ans = ["* " + str(self.name) + " *", "Р§Р°СЃС‚СЊ СЂРµС‡Рё: " + str(self.type)]
+        c = "РҐР°СЂР°РєС‚РµСЂРёСЃС‚РёРєР°: "
         q = list(self.char)
         for el in q[:-1]:
             c = c + str(el) + ", "
@@ -50,23 +50,23 @@ class PWord:
             pass
         try:
             
-            curr = "Формы:"
-            if self.type == "существительное":
-                curr = curr + "\n" + "Ед. ч.:"
+            curr = "Р¤РѕСЂРјС‹:"
+            if self.type == "СЃСѓС‰РµСЃС‚РІРёС‚РµР»СЊРЅРѕРµ":
+                curr = curr + "\n" + "РњРЅ. С‡.:"
                 for el in self.formes[0]:
                     #print(el)
                     curr = curr + "\n" + ' ' * 4 + str(el) + ": " + str(self.formes[0][el])
-                curr = curr + "\n" + "Мн. ч.:"
+                curr = curr + "\n" + "Р•Рґ. С‡.:"
                 for el in self.formes[1]:
                     #print(el)
                     curr = curr + "\n" + ' ' * 4 + str(el) + ": " + str(self.formes[1][el])
-            elif self.type == "прилагательное":
+            elif self.type == "РїСЂРёР»Р°РіР°С‚РµР»СЊРЅРѕРµ":
                 for el1 in self.formes:
                     curr = curr + "\n" + str(el1)
                     for q in self.formes[el1]:
                         curr = curr + '\n' + " " * 4 + str(q) + ": " + str(self.formes[el1][q])
                 
-            elif self.type == "глагол":
+            elif self.type == "РіР»Р°РіРѕР»":
                 #print(self.formes)
                 #exit(0)
                 #print(*self.formes)
