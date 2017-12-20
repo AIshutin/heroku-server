@@ -52,11 +52,11 @@ class PWord:
             
             curr = "Формы:"
             if self.type == "существительное":
-                curr = curr + "\n" + "Мн. ч.:"
+                curr = curr + "\n" + "Ед. ч.:"
                 for el in self.formes[0]:
                     #print(el)
                     curr = curr + "\n" + ' ' * 4 + str(el) + ": " + str(self.formes[0][el])
-                curr = curr + "\n" + "Ед. ч.:"
+                curr = curr + "\n" + "Мн. ч.:"
                 for el in self.formes[1]:
                     #print(el)
                     curr = curr + "\n" + ' ' * 4 + str(el) + ": " + str(self.formes[1][el])
