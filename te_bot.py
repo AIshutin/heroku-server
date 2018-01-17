@@ -1,12 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 import requests
-import handleMessage as hM
+from handleMessage import *
 import WebBotTest
+from time import sleep
+
 last_update_id = 0
 API_KEY = "407337744:AAGWltls4FSHvI2yThjcU3qgj68zuAIKcX8"
 admin = 0
-from time import sleep
+
 log = True
 was = set()
 try:
@@ -20,111 +23,29 @@ try:
     fin.close()
 except:
     pass
+
 base = open("wordbase.txt", "a", encoding="utf-8")
 
-class PWord:
-    name = None
-    type = None
-    formes = dict()
-    char = set()
-    def __init__(self, **kwargs):
-        for el in kwargs:
-            if el == "name":
-                self.name = kwargs[el]
-            if el == "char":
-                self.char = kwargs[el]
-            if el == "type":
-                self.type = kwargs[el]
-            if el == "formes":
-                self.formes = kwargs[el]
-        
-    def __str__(self):
-        ans = ["* " + str(self.name) + " *", "Часть речи: " + str(self.type)]
-        c = "Характеристика: "
-        q = list(self.char)
-        for el in q[:-1]:
-            c = c + str(el) + ", "
-        try:
-            c = c + q[-1]
-            ans.append(c)
-        except:
-            pass
-        try:
-            
-            curr = "Формы:"
-            if self.type == "существительное":
-                curr = curr + "\n" + "Ед. ч.:"
-                for el in self.formes[0]:
-                    #print(el)
-                    curr = curr + "\n" + ' ' * 4 + str(el) + ": " + str(self.formes[0][el])
-                curr = curr + "\n" + "Мн. ч.:"
-                for el in self.formes[1]:
-                    #print(el)
-                    curr = curr + "\n" + ' ' * 4 + str(el) + ": " + str(self.formes[1][el])
-            elif self.type == "прилагательное":
-                for el1 in self.formes:
-                    curr = curr + "\n" + str(el1)
-                    for q in self.formes[el1]:
-                        curr = curr + '\n' + " " * 4 + str(q) + ": " + str(self.formes[el1][q])
-                
-            elif self.type == "глагол":
-                #print(self.formes)
-                #exit(0)
-                #print(*self.formes)
-                for el1 in self.formes:
-                    curr = curr + "\n" + str(el1)
-                    #print("$")
-                    #print(el1, self.formes[el1])
-                    #print("#")
-                    #sleep(1)
-                    for tense in self.formes[el1]:
-                        curr = curr + "\n" + " " * 4 + str(tense)
-                        #print(tense, self.formes[el1][tense])
-                        try:
-                            for q in self.formes[el1][tense]:
-                                #print(q, self.formes[el1][tense][q])
-                                curr = curr + '\n' + " " * 8 + str(q) + ": " + str(self.formes[el1][tense][q])        
-                        except:
-                            curr = curr + ": " + str(self.formes[el1][tense])
-                
-            ans.append(curr)
-        except Exception as exp:
-            print(exp)
-        return "\n".join(ans)
-    __repr__ = __str__
-
-def sendMessage(text, id):
-    data["chat_id"] = id
-    data["text"] = text  
-    data["parse_mode"] = "Markdown"
-    URL = "https://api.telegram.org/bot" + str(API_KEY) + "/sendMessage"
-    response = requests.get(URL, data=data)
-    
-coms = dict()
 print(was)
+
 while log:
-    # add your code here...
     data = dict()
     data["offset"] = str(last_update_id)
     URL = "https://api.telegram.org/bot" + str(API_KEY) + "/getUpdates"
-    response = requests.get(URL, data=data) # make GET request
+    response = requests.get(URL, data=data) 
     updates = response.json()
     for msg in updates['result']:
         try:
             data = dict()
-            #print(msg)
             last_update_id = max(last_update_id, int(msg["update_id"]) + 1)
             data["chat_id"] = msg["message"]["chat"]["id"]
+            
             if admin == 0:
                 admin = msg["message"]["from"]["id"]
-            hM.handleMessage(msg)
+            
+            handleMessage(msg["message"]["text"], admin == msg["message"]["from"]["id"])
+        
         except Exception as err:
             print(err)
-                
-        #print(msg)
-        # add your code here
-    #reak
-    sleep(1)
-    #print("!")
 
-    # sleep here
+    sleep(1)
