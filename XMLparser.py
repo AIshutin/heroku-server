@@ -4,13 +4,16 @@ from LogicGroups import *
 import TextParser as TP
 import LogicGroups as LG
 
+
 def noun_changing(soup):
-    param = {"style": "float:right; clear:right; margin-left:0.5em; margin-bottom:0.5em; border: 1px solid #6699CC; border-collapse:collapse;", "cellpadding":"2", "rules":"all", "width":"250"}
+    param = {
+        "style": "float:right; clear:right; margin-left:0.5em; margin-bottom:0.5em; border: 1px solid #6699CC; border-collapse:collapse;",
+        "cellpadding": "2", "rules": "all", "width": "250"}
     tables = soup.find_all("table", param)
     for el1 in tables:
         try:
             items = el1.find_all("tr")[1:]
-            #print(el1)
+            # print(el1)
             ans = [dict(), dict()]
             for el in items:
                 z = el.find_all("td")
@@ -51,11 +54,12 @@ def noun_changing(soup):
             pass
     return [dict(), dict()]
 
-def define_type(soup): #noun, verb, etc.
-    #Прилагательное
+
+def define_type(soup):  # noun, verb, etc.
+    # Прилагательное
     type1 = soup.find_all("p")
     for el in type1:
-        #print(el)
+        # print(el)
         try:
             text = ""
             for el in el.text:
@@ -63,51 +67,53 @@ def define_type(soup): #noun, verb, etc.
             for z in types:
                 if text.find(z) != -1:
                     return z
-            #print(text)
+            # print(text)
         except:
             pass
-    #print()
-    
-    #Существительные, глаголы
+    # print()
+
+    # Существительные, глаголы
     type1 = soup.find_all("p")
     for el in type1:
         q = el.find("a")
         if q != None:
-            #print(1, el)
-            try:  
+            # print(1, el)
+            try:
                 b = True
                 name1 = q.get("title")
-                #print(q)
+                # print(q)
                 for el in name1:
                     if el not in alpha:
                         b = False
                 if b and name1 in types:
                     return name1
-                    
+
             except:
                 pass
 
     return "другое"
+
 
 def noun_prop(soup):
     type1 = soup.find_all("p")
     for el in type1:
         q = el.find("a")
         if q != None:
-            #print(el.text)
-            #print(atr)
+            # print(el.text)
+            # print(atr)
             ans = set()
             atr = el.text
-            #print(atr)
+            # print(atr)
             for el in LG.terms:
                 if atr.find(el) != -1:
                     ans.add(LG.terms[el])
             if ans != {}:
                 return ans
     print("XMLParser свойства существительного не найдены")
-    return ["другое"]        
+    return ["другое"]
 
-def normalize(s): #проставление ударений, нормализация строчек с переводами строки
+
+def normalize(s):  # проставление ударений, нормализация строчек с переводами строки
     l = list(s.replace("△", "").split("\n"))
     ans = []
     for z in l:
@@ -126,16 +132,19 @@ def normalize(s): #проставление ударений, нормализа
         ans.append(text + el)
     return ans
 
+
 def adjective_changing(soup):
-    #print(soup)
-    param = {"style": "float:right; clear:right; margin-left:0.5em; margin-bottom:0.5em; border: 1px solid #6699CC; border-collapse:collapse;", "cellpadding":"2", "rules":"all", "width":"210"}
+    # print(soup)
+    param = {
+        "style": "float:right; clear:right; margin-left:0.5em; margin-bottom:0.5em; border: 1px solid #6699CC; border-collapse:collapse;",
+        "cellpadding": "2", "rules": "all", "width": "210"}
     table = soup.find("table", param)
     if not table:
         return
     rows = table.find_all("tr")
-    if len(rows) <= 7: #8 - 10
+    if len(rows) <= 7:  # 8 - 10
         return
-    #print(table)
+    # print(table)
     rows = rows[2:]
     ans = dict()
     ans["м. р."] = dict()
@@ -147,20 +156,21 @@ def adjective_changing(soup):
         cols = row.find_all("td")
         title = cols[0].text[:3]
         if title[-1] != ".":
-            title = title[:-1] + '.' 
+            title = title[:-1] + '.'
         i = 0
-        #print(cols)
+        # print(cols)
         if len(cols) < 5:
             continue
-        
+
         while i < 4:
-            #print(cols[-(4 - i)].text.replace("△", ""))
+            # print(cols[-(4 - i)].text.replace("△", ""))
             l = normalize(cols[-(4 - i)].text)
             ans[arr[i]][title] = []
             for el in l:
                 ans[arr[i]][title].append(el)
             i += 1
     return ans
+
 
 def adjective_prop(soup):
     type1 = soup.find_all("p")
@@ -178,10 +188,11 @@ def adjective_prop(soup):
             pass
     if ans != []:
         return ans
-    #print("XMLParser свойства прилагательного не найдены")
-    return []     
+    # print("XMLParser свойства прилагательного не найдены")
+    return []
 
-def normalize2(string): # для парсинга будущего времени
+
+def normalize2(string):  # для парсинга будущего времени
     l = list(string.split())
     main_word = normalize(l[-1])
     spec = list(l[0][:-1].split("/"))
@@ -190,11 +201,16 @@ def normalize2(string): # для парсинга будущего времен�
         ans.append([el, main_word])
     return ans
 
+
 def verb_changing(soup):
-    param = {"style": "float:right; clear:right; padding:3; margin-left:0.5em; margin-bottom:0.5em; border: 1px solid #6699CC; border-collapse:collapse;", "cellpadding": "2", "rules":"all"}
+    param = {
+        "style": "float:right; clear:right; padding:3; margin-left:0.5"
+                 "em; margin-bottom:0.5em; border: 1px solid #6699CC; border-collapse:collapse;",
+        "cellpadding": "2", "rules": "all"}
     table = soup.find("table", param)
-    #print(table)
-    ans = {"гл.": {"н. вр.": dict(), "пр. вр.": dict(), "б. вр.": dict(), "повелит.": dict()}, "прич.": dict(), "деепр.": dict()}
+    # print(table)
+    ans = {"гл.": {"н. вр.": dict(), "пр. вр.": dict(), "б. вр.": dict(), "повелит.": dict()}, "прич.": dict(),
+           "деепр.": dict()}
     if not table:
         return
     rows = table.find_all("tr")
@@ -212,13 +228,13 @@ def verb_changing(soup):
     for row in rows[7:]:
         cols = row.find_all("td")
         title = cols[0].find("a").get("title")
-        if title.find("деепр") != -1: #деепричастие
+        if title.find("деепр") != -1:  # деепричастие
             if title in LG.terms:
                 title = LG.terms[title]
             else:
-                print("Add to terms in LogicGroups", title)            
+                print("Add to terms in LogicGroups", title)
             ans["деепр."][title] = normalize(cols[1].find("a").text)
-        else: # причастие и будущее
+        else:  # причастие и будущее
             if title in LG.terms:
                 title = LG.terms[title]
             else:
@@ -228,6 +244,7 @@ def verb_changing(soup):
             except:
                 ans["гл."][title] = normalize2(cols[1].text)
     return ans
+
 
 def verb_prop(soup):
     p = soup.find_all("p")
@@ -243,17 +260,18 @@ def verb_prop(soup):
                 ans.add(LG.terms[prop.text])
         return ans
     return set()
-    
+
+
 def adverb_prop(soup):
     p = soup.find_all('p')
-    
+
     for el in p:
         if el.find("a", {"title": "наречие"}) == None:
             continue
         ans = set()
         a = el.find_all("a")[1:]
         s = el.text
-        #print(s)
+        # print(s)
         ad = []
         l = list(s.split(". "))
         if len(l) >= 2:

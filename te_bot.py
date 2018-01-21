@@ -2,14 +2,16 @@
 # -*- coding: utf-8 -*-
 
 import requests
-from handleMessage import *
-import WebBotTest
 from time import sleep
+from handleMessage import sendMessage
+from handleMessage import handleMessage
+from info import API_KEY
 
 last_update_id = 0
-API_KEY = "407337744:AAGWltls4FSHvI2yThjcU3qgj68zuAIKcX8"
 admin = 0
 
+# ToDo Save module
+''' 
 log = True
 was = set()
 try:
@@ -23,17 +25,17 @@ try:
     fin.close()
 except:
     pass
-
 base = open("wordbase.txt", "a", encoding="utf-8")
-
 print(was)
+'''
 
-while log:
+while 1:
     data = dict()
     data["offset"] = str(last_update_id)
     URL = "https://api.telegram.org/bot" + str(API_KEY) + "/getUpdates"
     response = requests.get(URL, data=data) 
     updates = response.json()
+
     for msg in updates['result']:
         try:
             data = dict()
@@ -42,8 +44,8 @@ while log:
             
             if admin == 0:
                 admin = msg["message"]["from"]["id"]
-            
-            handleMessage(msg["message"]["text"], admin == msg["message"]["from"]["id"])
+
+            sendMessage(handleMessage(msg["message"]["text"], admin == msg["message"]["from"]["id"]), data["chat_id"])
         
         except Exception as err:
             print(err)
